@@ -21,12 +21,10 @@ public class Aplicacion extends JFrame{
 
 	private JButton btnJugar;
 	
-	private JFrame ventanaElegirNivel;
-	private JPanel panelElegirNivel;
-	
 	private JPanel contentPane;
 	private JLabel menuImagen;
-	private JLabel menuLluvia;
+	
+	private JFrame sodoku;
 
 	private static final Aplicacion gui=new Aplicacion();
 	
@@ -59,8 +57,8 @@ public class Aplicacion extends JFrame{
 		
 		//Creo el boton jugar y lo agrego al panel de inicio
 		btnJugar=new JButton(new ImageIcon("Sprites\\button_elegir-nivel.png"));
-		/*oyenteJugar oyenteJugar=new oyenteJugar();
-		btnJugar.addActionListener(oyenteJugar);*/
+		oyenteJugar oyenteJugar=new oyenteJugar();
+		btnJugar.addActionListener(oyenteJugar);
 		btnJugar.setFocusPainted(false);
 		btnJugar.setBounds(400, 300, 170, 53);
 		contentPane.add(btnJugar);
@@ -97,6 +95,14 @@ public class Aplicacion extends JFrame{
 	class oyenteSalir implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
 			System.exit(0);
+		}
+	}
+	
+	class oyenteJugar implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			gui.setVisible(false);
+			sodoku = new Sudoku_GUI();
+			sodoku.setVisible(true);
 		}
 	}
 	
