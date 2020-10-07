@@ -2,7 +2,7 @@ package Juego;
 
 import javax.swing.JLabel;
 
-public class PanelSodoku extends JLabel{
+public class PanelSudoku extends JLabel{
 
 	/**
 	 * 
@@ -10,7 +10,7 @@ public class PanelSodoku extends JLabel{
 	private static final long serialVersionUID = 1L;
 	int fila,columna;
 	
-	public PanelSodoku(int n,int m) {
+	public PanelSudoku(int n,int m) {
 		columna=n;
 		fila=m;
 	}

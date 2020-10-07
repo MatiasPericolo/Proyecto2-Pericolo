@@ -6,8 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.ImageIcon;
@@ -23,11 +29,22 @@ public class Sudoku_GUI extends JFrame {
 
 	private JPanel contentPane;
 
+	private JPanel linea1;
+	private JPanel linea2;
+	private JPanel linea3;
+	private JPanel linea4;
+	
+	private JLabel[] paneles_reloj;
+	
 	private int numeroActual;
 	
-	private PanelSodoku[][] grilla;
+	private PanelSudoku[][] grilla;
+	
+	private Sudoku_Logica logica;
 	
 	JLabel borrar;
+	
+	private static int minutos,segundos;
 	
 	/**
 	 * Launch the application.
@@ -50,12 +67,16 @@ public class Sudoku_GUI extends JFrame {
 	 */
 	public Sudoku_GUI() {
 		iniciarJuego();
+		iniciarReloj();
+		detectarEstadoInicial();
 	}
 	
 	public void iniciarJuego() {
 		
 		numeroActual=0;
-		grilla=new PanelSodoku[9][9];
+		grilla=new PanelSudoku[9][9];
+		paneles_reloj=new JLabel[4];
+		logica=new Sudoku_Logica();
 		
 		addMouseListener(click);
 		
@@ -66,487 +87,487 @@ public class Sudoku_GUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		PanelSodoku panel_1_1 = new PanelSodoku(1,1);
+		PanelSudoku panel_1_1 = new PanelSudoku(1,1);
 		panel_1_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_1_1.setBounds(24, 24, 56, 56);
 		contentPane.add(panel_1_1);
 		grilla[0][0]=panel_1_1;
 		
-		PanelSodoku panel_1_2 = new PanelSodoku(1,2);
+		PanelSudoku panel_1_2 = new PanelSudoku(1,2);
 		panel_1_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_1_2.setBounds(80, 24, 56, 56);
 		contentPane.add(panel_1_2);
 		grilla[0][1]=panel_1_2;
 		
-		PanelSodoku panel_1_3 = new PanelSodoku(1,3);
-		panel_1_3.setBorder(new MatteBorder(1, 1, 1, 4, (Color) Color.BLACK));
+		PanelSudoku panel_1_3 = new PanelSudoku(1,3);
+		panel_1_3.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_1_3.setBounds(136, 24, 56, 56);
 		contentPane.add(panel_1_3);
 		grilla[0][2]=panel_1_3;
 		
-		PanelSodoku panel_1_4 = new PanelSodoku(1,4);
+		PanelSudoku panel_1_4 = new PanelSudoku(1,4);
 		panel_1_4.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_1_4.setBounds(192, 24, 56, 56);
 		contentPane.add(panel_1_4);
 		grilla[0][3]=panel_1_4;
 		
-		PanelSodoku panel_1_5 = new PanelSodoku(1,5);
+		PanelSudoku panel_1_5 = new PanelSudoku(1,5);
 		panel_1_5.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_1_5.setBounds(248, 24, 56, 56);
 		contentPane.add(panel_1_5);
 		grilla[0][4]=panel_1_5;
 		
-		PanelSodoku panel_1_6 = new PanelSodoku(1,6);
-		panel_1_6.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_1_6 = new PanelSudoku(1,6);
+		panel_1_6.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_1_6.setBounds(304, 24, 56, 56);
 		contentPane.add(panel_1_6);
 		grilla[0][5]=panel_1_6;
 		
-		PanelSodoku panel_1_7 = new PanelSodoku(1,7);
+		PanelSudoku panel_1_7 = new PanelSudoku(1,7);
 		panel_1_7.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_1_7.setBounds(360, 24, 56, 56);
 		contentPane.add(panel_1_7);
 		grilla[0][6]=panel_1_7;
 		
-		PanelSodoku panel_1_8 = new PanelSodoku(1,8);
+		PanelSudoku panel_1_8 = new PanelSudoku(1,8);
 		panel_1_8.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_1_8.setBounds(416, 24, 56, 56);
 		contentPane.add(panel_1_8);
 		grilla[0][7]=panel_1_8;
 		
-		PanelSodoku panel_1_9 = new PanelSodoku(1,9);
+		PanelSudoku panel_1_9 = new PanelSudoku(1,9);
 		panel_1_9.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_1_9.setBounds(472, 24, 56, 56);
 		contentPane.add(panel_1_9);
 		grilla[0][8]=panel_1_9;
 		
-		PanelSodoku panel_2_1 = new PanelSodoku(2,1);
+		PanelSudoku panel_2_1 = new PanelSudoku(2,1);
 		panel_2_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_2_1.setBounds(24, 80, 56, 56);
 		contentPane.add(panel_2_1);
 		grilla[1][0]=panel_2_1;
 		
-		PanelSodoku panel_2_2 = new PanelSodoku(2,2);
+		PanelSudoku panel_2_2 = new PanelSudoku(2,2);
 		panel_2_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_2_2.setBounds(80, 80, 56, 56);
 		contentPane.add(panel_2_2);
 		grilla[1][1]=panel_2_2;
 		
-		PanelSodoku panel_2_3 = new PanelSodoku(2,3);
-		panel_2_3.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_2_3 = new PanelSudoku(2,3);
+		panel_2_3.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_2_3.setBounds(136, 80, 56, 56);
 		contentPane.add(panel_2_3);
 		grilla[1][2]=panel_2_3;
 		
-		PanelSodoku panel_2_4 = new PanelSodoku(2,4);
+		PanelSudoku panel_2_4 = new PanelSudoku(2,4);
 		panel_2_4.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_2_4.setBounds(192, 80, 56, 56);
 		contentPane.add(panel_2_4);
 		grilla[1][3]=panel_2_4;
 		
-		PanelSodoku panel_2_5 = new PanelSodoku(2,5);
+		PanelSudoku panel_2_5 = new PanelSudoku(2,5);
 		panel_2_5.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_2_5.setBounds(248, 80, 56, 56);
 		contentPane.add(panel_2_5);
 		grilla[1][4]=panel_2_5;
 		
-		PanelSodoku panel_2_6 = new PanelSodoku(2,6);
-		panel_2_6.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_2_6 = new PanelSudoku(2,6);
+		panel_2_6.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_2_6.setBounds(304, 80, 56, 56);
 		contentPane.add(panel_2_6);
 		grilla[1][5]=panel_2_6;
 		
-		PanelSodoku panel_2_7 = new PanelSodoku(2,7);
+		PanelSudoku panel_2_7 = new PanelSudoku(2,7);
 		panel_2_7.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_2_7.setBounds(360, 80, 56, 56);
 		contentPane.add(panel_2_7);
 		grilla[1][6]=panel_2_7;
 		
-		PanelSodoku panel_2_8 = new PanelSodoku(2,8);
+		PanelSudoku panel_2_8 = new PanelSudoku(2,8);
 		panel_2_8.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_2_8.setBounds(416, 80, 56, 56);
 		contentPane.add(panel_2_8);
 		grilla[1][7]=panel_2_8;
 		
-		PanelSodoku panel_2_9 = new PanelSodoku(2,9);
+		PanelSudoku panel_2_9 = new PanelSudoku(2,9);
 		panel_2_9.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_2_9.setBounds(472, 80, 56, 56);
 		contentPane.add(panel_2_9);
 		grilla[1][8]=panel_2_9;
 		
-		PanelSodoku panel_3_1 = new PanelSodoku(3,1);
-		panel_3_1.setBorder(new MatteBorder(1, 1, 4, 0, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_3_1 = new PanelSudoku(3,1);
+		panel_3_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_3_1.setBounds(24, 136, 56, 56);
 		contentPane.add(panel_3_1);
 		grilla[2][0]=panel_3_1;
 		
-		PanelSodoku panel_3_2 = new PanelSodoku(3,2);
-		panel_3_2.setBorder(new MatteBorder(1, 1, 4, 0, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_3_2 = new PanelSudoku(3,2);
+		panel_3_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_3_2.setBounds(80, 136, 56, 56);
 		contentPane.add(panel_3_2);
 		grilla[2][1]=panel_3_2;
 		
-		PanelSodoku panel_3_3 = new PanelSodoku(3,3);
-		panel_3_3.setBorder(new MatteBorder(1, 1, 4, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_3_3 = new PanelSudoku(3,3);
+		panel_3_3.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_3_3.setBounds(136, 136, 56, 56);
 		contentPane.add(panel_3_3);
 		grilla[2][2]=panel_3_3;
 		
-		PanelSodoku panel_3_4 = new PanelSodoku(3,4);
-		panel_3_4.setBorder(new MatteBorder(1, 1, 4, 1, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_3_4 = new PanelSudoku(3,4);
+		panel_3_4.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_3_4.setBounds(192, 136, 56, 56);
 		contentPane.add(panel_3_4);
 		grilla[2][3]=panel_3_4;
 		
-		PanelSodoku panel_3_5 = new PanelSodoku(3,5);
-		panel_3_5.setBorder(new MatteBorder(1, 1, 4, 1, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_3_5 = new PanelSudoku(3,5);
+		panel_3_5.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_3_5.setBounds(248, 136, 56, 56);
 		contentPane.add(panel_3_5);
 		grilla[2][4]=panel_3_5;
 		
-		PanelSodoku panel_3_6 = new PanelSodoku(3,6);
-		panel_3_6.setBorder(new MatteBorder(1, 1, 4, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_3_6 = new PanelSudoku(3,6);
+		panel_3_6.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_3_6.setBounds(304, 136, 56, 56);
 		contentPane.add(panel_3_6);
 		grilla[2][5]=panel_3_6;
 		
-		PanelSodoku panel_3_7 = new PanelSodoku(3,7);
-		panel_3_7.setBorder(new MatteBorder(1, 1, 4, 1, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_3_7 = new PanelSudoku(3,7);
+		panel_3_7.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_3_7.setBounds(360, 136, 56, 56);
 		contentPane.add(panel_3_7);
 		grilla[2][6]=panel_3_7;
 		
-		PanelSodoku panel_3_8 = new PanelSodoku(3,8);
-		panel_3_8.setBorder(new MatteBorder(1, 1, 4, 1, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_3_8 = new PanelSudoku(3,8);
+		panel_3_8.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_3_8.setBounds(416, 136, 56, 56);
 		contentPane.add(panel_3_8);
 		grilla[2][7]=panel_3_8;
 		
-		PanelSodoku panel_3_9 = new PanelSodoku(3,9);
-		panel_3_9.setBorder(new MatteBorder(1, 1, 4, 1, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_3_9 = new PanelSudoku(3,9);
+		panel_3_9.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_3_9.setBounds(472, 136, 56, 56);
 		contentPane.add(panel_3_9);
 		grilla[2][8]=panel_3_9;
 		
-		PanelSodoku panel_4_1 = new PanelSodoku(4,1);
+		PanelSudoku panel_4_1 = new PanelSudoku(4,1);
 		panel_4_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_4_1.setBounds(24, 192, 56, 56);
 		contentPane.add(panel_4_1);
 		grilla[3][0]=panel_4_1;
 		
-		PanelSodoku panel_4_2 = new PanelSodoku(4,2);
+		PanelSudoku panel_4_2 = new PanelSudoku(4,2);
 		panel_4_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_4_2.setBounds(80, 192, 56, 56);
 		contentPane.add(panel_4_2);
 		grilla[3][1]=panel_4_2;
 		
-		PanelSodoku panel_4_3 = new PanelSodoku(4,3);
-		panel_4_3.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_4_3 = new PanelSudoku(4,3);
+		panel_4_3.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_4_3.setBounds(136, 192, 56, 56);
 		contentPane.add(panel_4_3);
 		grilla[3][2]=panel_4_3;
 		
-		PanelSodoku panel_4_4 = new PanelSodoku(4,4);
+		PanelSudoku panel_4_4 = new PanelSudoku(4,4);
 		panel_4_4.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_4_4.setBounds(192, 192, 56, 56);
 		contentPane.add(panel_4_4);
 		grilla[3][3]=panel_4_4;
 		
-		PanelSodoku panel_4_5 = new PanelSodoku(4,5);
+		PanelSudoku panel_4_5 = new PanelSudoku(4,5);
 		panel_4_5.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_4_5.setBounds(248, 192, 56, 56);
 		contentPane.add(panel_4_5);
 		grilla[3][4]=panel_4_5;
 		
-		PanelSodoku panel_4_6 = new PanelSodoku(4,6);
-		panel_4_6.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_4_6 = new PanelSudoku(4,6);
+		panel_4_6.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_4_6.setBounds(304, 192, 56, 56);
 		contentPane.add(panel_4_6);
 		grilla[3][5]=panel_4_6;
 		
-		PanelSodoku panel_4_7 = new PanelSodoku(4,7);
+		PanelSudoku panel_4_7 = new PanelSudoku(4,7);
 		panel_4_7.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_4_7.setBounds(360, 192, 56, 56);
 		contentPane.add(panel_4_7);
 		grilla[3][6]=panel_4_7;
 		
-		PanelSodoku panel_4_8 = new PanelSodoku(4,8);
+		PanelSudoku panel_4_8 = new PanelSudoku(4,8);
 		panel_4_8.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_4_8.setBounds(416, 192, 56, 56);
 		contentPane.add(panel_4_8);
 		grilla[3][7]=panel_4_8;
 		
-		PanelSodoku panel_4_9 = new PanelSodoku(4,9);
+		PanelSudoku panel_4_9 = new PanelSudoku(4,9);
 		panel_4_9.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_4_9.setBounds(472, 192, 56, 56);
 		contentPane.add(panel_4_9);
 		grilla[3][8]=panel_4_9;
 		
-		PanelSodoku panel_5_1 = new PanelSodoku(5,1);
+		PanelSudoku panel_5_1 = new PanelSudoku(5,1);
 		panel_5_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_5_1.setBounds(24, 248, 56, 56);
 		contentPane.add(panel_5_1);
 		grilla[4][0]=panel_5_1;
 		
-		PanelSodoku panel_5_2 = new PanelSodoku(5,2);
+		PanelSudoku panel_5_2 = new PanelSudoku(5,2);
 		panel_5_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_5_2.setBounds(80, 248, 56, 56);
 		contentPane.add(panel_5_2);
 		grilla[4][1]=panel_5_2;
 		
-		PanelSodoku panel_5_3 = new PanelSodoku(5,3);
-		panel_5_3.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_5_3 = new PanelSudoku(5,3);
+		panel_5_3.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_5_3.setBounds(136, 248, 56, 56);
 		contentPane.add(panel_5_3);
 		grilla[4][2]=panel_5_3;
 		
-		PanelSodoku panel_5_4 = new PanelSodoku(5,4);
+		PanelSudoku panel_5_4 = new PanelSudoku(5,4);
 		panel_5_4.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_5_4.setBounds(192, 248, 56, 56);
 		contentPane.add(panel_5_4);
 		grilla[4][3]=panel_5_4;
 		
-		PanelSodoku panel_5_5 = new PanelSodoku(5,5);
+		PanelSudoku panel_5_5 = new PanelSudoku(5,5);
 		panel_5_5.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_5_5.setBounds(248, 248, 56, 56);
 		contentPane.add(panel_5_5);
 		grilla[4][4]=panel_5_5;
 		
-		PanelSodoku panel_5_6 = new PanelSodoku(5,6);
-		panel_5_6.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_5_6 = new PanelSudoku(5,6);
+		panel_5_6.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_5_6.setBounds(304, 248, 56, 56);
 		contentPane.add(panel_5_6);
 		grilla[4][5]=panel_5_6;
 		
-		PanelSodoku panel_5_7 = new PanelSodoku(5,7);
+		PanelSudoku panel_5_7 = new PanelSudoku(5,7);
 		panel_5_7.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_5_7.setBounds(360, 248, 56, 56);
 		contentPane.add(panel_5_7);
 		grilla[4][6]=panel_5_7;
 		
-		PanelSodoku panel_5_8 = new PanelSodoku(5,8);
+		PanelSudoku panel_5_8 = new PanelSudoku(5,8);
 		panel_5_8.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_5_8.setBounds(416, 248, 56, 56);
 		contentPane.add(panel_5_8);
 		grilla[4][7]=panel_5_8;
 		
-		PanelSodoku panel_5_9 = new PanelSodoku(5,9);
+		PanelSudoku panel_5_9 = new PanelSudoku(5,9);
 		panel_5_9.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_5_9.setBounds(472, 248, 56, 56);
 		contentPane.add(panel_5_9);
 		grilla[4][8]=panel_5_9;
 		
-		PanelSodoku panel_6_1 = new PanelSodoku(6,1);
-		panel_6_1.setBorder(new MatteBorder(1, 1, 4, 1, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_6_1 = new PanelSudoku(6,1);
+		panel_6_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_6_1.setBounds(24, 304, 56, 56);
 		contentPane.add(panel_6_1);
 		grilla[5][0]=panel_6_1;
 		
-		PanelSodoku panel_6_2 = new PanelSodoku(6,2);
-		panel_6_2.setBorder(new MatteBorder(1, 1, 4, 1, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_6_2 = new PanelSudoku(6,2);
+		panel_6_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_6_2.setBounds(80, 304, 56, 56);
 		contentPane.add(panel_6_2);
 		grilla[5][1]=panel_6_2;
 		
-		PanelSodoku panel_6_3 = new PanelSodoku(6,3);
-		panel_6_3.setBorder(new MatteBorder(1, 1, 4, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_6_3 = new PanelSudoku(6,3);
+		panel_6_3.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_6_3.setBounds(136, 304, 56, 56);
 		contentPane.add(panel_6_3);
 		grilla[5][2]=panel_6_3;
 		
-		PanelSodoku panel_6_4 = new PanelSodoku(6,4);
-		panel_6_4.setBorder(new MatteBorder(1, 1, 4, 1, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_6_4 = new PanelSudoku(6,4);
+		panel_6_4.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_6_4.setBounds(192, 304, 56, 56);
 		contentPane.add(panel_6_4);
 		grilla[5][3]=panel_6_4;
 		
-		PanelSodoku panel_6_5 = new PanelSodoku(6,5);
-		panel_6_5.setBorder(new MatteBorder(1, 1, 4, 1, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_6_5 = new PanelSudoku(6,5);
+		panel_6_5.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_6_5.setBounds(248, 304, 56, 56);
 		contentPane.add(panel_6_5);
 		grilla[5][4]=panel_6_5;
 		
-		PanelSodoku panel_6_6 = new PanelSodoku(6,6);
-		panel_6_6.setBorder(new MatteBorder(1, 1, 4, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_6_6 = new PanelSudoku(6,6);
+		panel_6_6.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_6_6.setBounds(304, 304, 56, 56);
 		contentPane.add(panel_6_6);
 		grilla[5][5]=panel_6_6;
 		
-		PanelSodoku panel_6_7 = new PanelSodoku(6,7);
-		panel_6_7.setBorder(new MatteBorder(1, 1, 4, 1, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_6_7 = new PanelSudoku(6,7);
+		panel_6_7.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_6_7.setBounds(360, 304, 56, 56);
 		contentPane.add(panel_6_7);
 		grilla[5][6]=panel_6_7;
 		
-		PanelSodoku panel_6_8 = new PanelSodoku(6,8);
-		panel_6_8.setBorder(new MatteBorder(1, 1, 4, 1, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_6_8 = new PanelSudoku(6,8);
+		panel_6_8.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_6_8.setBounds(416, 304, 56, 56);
 		contentPane.add(panel_6_8);
 		grilla[5][7]=panel_6_8;
 		
-		PanelSodoku panel_6_9 = new PanelSodoku(6,9);
-		panel_6_9.setBorder(new MatteBorder(1, 1, 4, 1, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_6_9 = new PanelSudoku(6,9);
+		panel_6_9.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_6_9.setBounds(472, 304, 56, 56);
 		contentPane.add(panel_6_9);
 		grilla[5][8]=panel_6_9;
 		
-		PanelSodoku panel_7_1 = new PanelSodoku(7,1);
+		PanelSudoku panel_7_1 = new PanelSudoku(7,1);
 		panel_7_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_7_1.setBounds(24, 360, 56, 56);
 		contentPane.add(panel_7_1);
 		grilla[6][0]=panel_7_1;
 		
-		PanelSodoku panel_7_2 = new PanelSodoku(7,2);
+		PanelSudoku panel_7_2 = new PanelSudoku(7,2);
 		panel_7_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_7_2.setBounds(80, 360, 56, 56);
 		contentPane.add(panel_7_2);
 		grilla[6][1]=panel_7_2;
 		
-		PanelSodoku panel_7_3 = new PanelSodoku(7,3);
-		panel_7_3.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_7_3 = new PanelSudoku(7,3);
+		panel_7_3.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_7_3.setBounds(136, 360, 56, 56);
 		contentPane.add(panel_7_3);
 		grilla[6][2]=panel_7_3;
 		
-		PanelSodoku panel_7_4 = new PanelSodoku(7,4);
+		PanelSudoku panel_7_4 = new PanelSudoku(7,4);
 		panel_7_4.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_7_4.setBounds(192, 360, 56, 56);
 		contentPane.add(panel_7_4);
 		grilla[6][3]=panel_7_4;
 		
-		PanelSodoku panel_7_5 = new PanelSodoku(7,5);
+		PanelSudoku panel_7_5 = new PanelSudoku(7,5);
 		panel_7_5.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_7_5.setBounds(248, 360, 56, 56);
 		contentPane.add(panel_7_5);
 		grilla[6][4]=panel_7_5;
 		
-		PanelSodoku panel_7_6 = new PanelSodoku(7,6);
-		panel_7_6.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_7_6 = new PanelSudoku(7,6);
+		panel_7_6.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_7_6.setBounds(304, 360, 56, 56);
 		contentPane.add(panel_7_6);
 		grilla[6][5]=panel_7_6;
 		
-		PanelSodoku panel_7_7 = new PanelSodoku(7,7);
+		PanelSudoku panel_7_7 = new PanelSudoku(7,7);
 		panel_7_7.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_7_7.setBounds(360, 360, 56, 56);
 		contentPane.add(panel_7_7);
 		grilla[6][6]=panel_7_7;
 		
-		PanelSodoku panel_7_8 = new PanelSodoku(7,8);
+		PanelSudoku panel_7_8 = new PanelSudoku(7,8);
 		panel_7_8.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_7_8.setBounds(416, 360, 56, 56);
 		contentPane.add(panel_7_8);
 		grilla[6][7]=panel_7_8;
 		
-		PanelSodoku panel_7_9 = new PanelSodoku(7,9);
+		PanelSudoku panel_7_9 = new PanelSudoku(7,9);
 		panel_7_9.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_7_9.setBounds(472, 360, 56, 56);
 		contentPane.add(panel_7_9);
 		grilla[6][8]=panel_7_9;
 		
-		PanelSodoku panel_8_1 = new PanelSodoku(8,1);
+		PanelSudoku panel_8_1 = new PanelSudoku(8,1);
 		panel_8_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_8_1.setBounds(24, 416, 56, 56);
 		contentPane.add(panel_8_1);
 		grilla[7][0]=panel_8_1;
 		
-		PanelSodoku panel_8_2 = new PanelSodoku(8,2);
+		PanelSudoku panel_8_2 = new PanelSudoku(8,2);
 		panel_8_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_8_2.setBounds(80, 416, 56, 56);
 		contentPane.add(panel_8_2);
 		grilla[7][1]=panel_8_2;
 		
-		PanelSodoku panel_8_3 = new PanelSodoku(8,3);
-		panel_8_3.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_8_3 = new PanelSudoku(8,3);
+		panel_8_3.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_8_3.setBounds(136, 416, 56, 56);
 		contentPane.add(panel_8_3);
 		grilla[7][2]=panel_8_3;
 		
-		PanelSodoku panel_8_4 = new PanelSodoku(8,4);
+		PanelSudoku panel_8_4 = new PanelSudoku(8,4);
 		panel_8_4.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_8_4.setBounds(192, 416, 56, 56);
 		contentPane.add(panel_8_4);
 		grilla[7][3]=panel_8_4;
 		
-		PanelSodoku panel_8_5 = new PanelSodoku(8,5);
+		PanelSudoku panel_8_5 = new PanelSudoku(8,5);
 		panel_8_5.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_8_5.setBounds(248, 416, 56, 56);
 		contentPane.add(panel_8_5);
 		grilla[7][4]=panel_8_5;
 		
-		PanelSodoku panel_8_6 = new PanelSodoku(8,6);
-		panel_8_6.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_8_6 = new PanelSudoku(8,6);
+		panel_8_6.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_8_6.setBounds(304, 416, 56, 56);
 		contentPane.add(panel_8_6);
 		grilla[7][5]=panel_8_6;
 		
-		PanelSodoku panel_8_7 = new PanelSodoku(8,7);
+		PanelSudoku panel_8_7 = new PanelSudoku(8,7);
 		panel_8_7.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_8_7.setBounds(360, 416, 56, 56);
 		contentPane.add(panel_8_7);
 		grilla[7][6]=panel_8_7;
 		
-		PanelSodoku panel_8_8 = new PanelSodoku(8,8);
+		PanelSudoku panel_8_8 = new PanelSudoku(8,8);
 		panel_8_8.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_8_8.setBounds(416, 416, 56, 56);
 		contentPane.add(panel_8_8);
 		grilla[7][7]=panel_8_8;
 		
-		PanelSodoku panel_8_9 = new PanelSodoku(8,9);
+		PanelSudoku panel_8_9 = new PanelSudoku(8,9);
 		panel_8_9.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_8_9.setBounds(472, 416, 56, 56);
 		contentPane.add(panel_8_9);
 		grilla[7][8]=panel_8_9;
 		
-		PanelSodoku panel_9_1 = new PanelSodoku(9,1);
+		PanelSudoku panel_9_1 = new PanelSudoku(9,1);
 		panel_9_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_9_1.setBounds(24, 472, 56, 56);
 		contentPane.add(panel_9_1);
 		grilla[8][0]=panel_9_1;
 		
-		PanelSodoku panel_9_2 = new PanelSodoku(9,2);
+		PanelSudoku panel_9_2 = new PanelSudoku(9,2);
 		panel_9_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_9_2.setBounds(80, 472, 56, 56);
 		contentPane.add(panel_9_2);
 		grilla[8][1]=panel_9_2;
 		
-		PanelSodoku panel_9_3 = new PanelSodoku(9,3);
-		panel_9_3.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_9_3 = new PanelSudoku(9,3);
+		panel_9_3.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_9_3.setBounds(136, 472, 56, 56);
 		contentPane.add(panel_9_3);
 		grilla[8][2]=panel_9_3;
 		
-		PanelSodoku panel_9_4 = new PanelSodoku(9,4);
+		PanelSudoku panel_9_4 = new PanelSudoku(9,4);
 		panel_9_4.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_9_4.setBounds(192, 472, 56, 56);
 		contentPane.add(panel_9_4);
 		grilla[8][3]=panel_9_4;
 		
-		PanelSodoku panel_9_5 = new PanelSodoku(9,5);
+		PanelSudoku panel_9_5 = new PanelSudoku(9,5);
 		panel_9_5.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_9_5.setBounds(248, 472, 56, 56);
 		contentPane.add(panel_9_5);
 		grilla[8][4]=panel_9_5;
 		
-		PanelSodoku panel_9_6 = new PanelSodoku(9,6);
-		panel_9_6.setBorder(new MatteBorder(1, 1, 1, 4, (Color) new Color(0, 0, 0)));
+		PanelSudoku panel_9_6 = new PanelSudoku(9,6);
+		panel_9_6.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		panel_9_6.setBounds(304, 472, 56, 56);
 		contentPane.add(panel_9_6);
 		grilla[8][5]=panel_9_6;
 		
-		PanelSodoku panel_9_7 = new PanelSodoku(9,7);
+		PanelSudoku panel_9_7 = new PanelSudoku(9,7);
 		panel_9_7.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_9_7.setBounds(360, 472, 56, 56);
 		contentPane.add(panel_9_7);
 		grilla[8][6]=panel_9_7;
 		
-		PanelSodoku panel_9_8 = new PanelSodoku(9,8);
+		PanelSudoku panel_9_8 = new PanelSudoku(9,8);
 		panel_9_8.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_9_8.setBounds(416, 472, 56, 56);
 		contentPane.add(panel_9_8);
 		grilla[8][7]=panel_9_8;
 		
-		PanelSodoku panel_9_9 = new PanelSodoku(9,9);
+		PanelSudoku panel_9_9 = new PanelSudoku(9,9);
 		panel_9_9.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
 		panel_9_9.setBounds(472, 472, 56, 56);
 		contentPane.add(panel_9_9);
@@ -613,21 +634,29 @@ public class Sudoku_GUI extends JFrame {
 		panelNumeros.setIcon(new ImageIcon("Sprites\\fondo_numeros.png"));
 		contentPane.add(panelNumeros);
 		
-		JPanel panel_minutos_1 = new JPanel();
+		JLabel panel_minutos_1 = new JLabel();
+		panel_minutos_1.setIcon(new ImageIcon("Sprites\\numero_reloj_0.png"));
 		panel_minutos_1.setBounds(593, 46, 56, 70);
 		contentPane.add(panel_minutos_1);
+		paneles_reloj[0]=panel_minutos_1;
 		
-		JPanel panel_minutos_2 = new JPanel();
+		JLabel panel_minutos_2 = new JLabel();
+		panel_minutos_2.setIcon(new ImageIcon("Sprites\\numero_reloj_0.png"));
 		panel_minutos_2.setBounds(648, 46, 56, 70);
 		contentPane.add(panel_minutos_2);
+		paneles_reloj[1]=panel_minutos_2;
 		
-		JPanel panel_segundos_1 = new JPanel();
+		JLabel panel_segundos_1 = new JLabel();
+		panel_segundos_1.setIcon(new ImageIcon("Sprites\\numero_reloj_0.png"));
 		panel_segundos_1.setBounds(727, 46, 56, 70);
 		contentPane.add(panel_segundos_1);
+		paneles_reloj[2]=panel_segundos_1;
 		
-		JPanel panel_segundos_2 = new JPanel();
+		JLabel panel_segundos_2 = new JLabel();
+		panel_segundos_2.setIcon(new ImageIcon("Sprites\\numero_reloj_0.png"));
 		panel_segundos_2.setBounds(782, 46, 56, 70);
 		contentPane.add(panel_segundos_2);
+		paneles_reloj[3]=panel_segundos_2;
 		
 		JLabel label = new JLabel(":");
 		label.setFont(new Font("Tahoma", Font.PLAIN, 26));
@@ -637,6 +666,26 @@ public class Sudoku_GUI extends JFrame {
 		borrar = new JLabel("");
 		borrar.setBounds(672, 156, 98, 47);
 		contentPane.add(borrar);
+		
+		linea1 = new JPanel();
+		linea1.setBackground(Color.BLACK);
+		linea1.setBounds(182, 24, 10, 504);
+		contentPane.add(linea1);
+		
+		linea2 = new JPanel();
+		linea2.setBackground(Color.BLACK);
+		linea2.setBounds(350, 24, 10, 504);
+		contentPane.add(linea2);
+		
+		linea3 = new JPanel();
+		linea3.setBackground(Color.BLACK);
+		linea3.setBounds(24, 182, 504, 10);
+		contentPane.add(linea3);
+		
+		linea4 = new JPanel();
+		linea4.setBackground(Color.BLACK);
+		linea4.setBounds(24, 350, 504, 10);
+		contentPane.add(linea4);
 		
 	}
 	
@@ -697,8 +746,11 @@ public class Sudoku_GUI extends JFrame {
 		return aux;
 	}
 	
-	private void actualizarPanel(PanelSodoku panel,int numero) {
+	private void actualizarPanel(PanelSudoku panel,int numero,boolean fallo) {
 		switch (numero) {
+		case 0:
+			panel.setIcon(null);
+			break;
 		case 1:
 			panel.setIcon(new ImageIcon("Sprites\\numero_grilla_1.png"));
 			break;
@@ -727,7 +779,140 @@ public class Sudoku_GUI extends JFrame {
 			panel.setIcon(new ImageIcon("Sprites\\numero_grilla_9.png"));
 			break;
 		}
+		
+		if(fallo)
+			panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.RED));
+		else
+			panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
+			
 	}
+	
+	private void repintarLineas() {
+		linea1.repaint();
+		linea2.repaint();
+		linea3.repaint();
+		linea4.repaint();
+	}
+	
+	private void detectarEstadoInicial() {
+		int x=0;
+		int y=0;
+		
+		try {
+            Scanner input = new Scanner(new File("Archivo\\estado_inicial.txt"));
+            
+            while (input.hasNextLine()) {
+                String line = input.nextLine();
+                for(int i=0;i<18;i++) {
+                	boolean fallo=logica.insertar(x, y, Integer.parseInt(""+line.charAt(i)));
+    				actualizarPanel(grilla[y][x],Integer.parseInt(""+line.charAt(i)),fallo);
+                	i++;
+                	x++;
+                }
+                x=0;
+                y++;
+            }
+            input.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+		
+		if(logica.comprobarEstado()) {
+			for(int i=0;i<14;i++) {
+				double aux1=Math.random()*9;
+				double aux2=Math.random()*9;
+				eliminarPanel((int)aux1,(int)aux2);
+			}
+		}else
+			for(int i=0;i<9;i++) {
+				for(int j=0;j<9;j++) {
+					eliminarPanel(i,j);
+					JOptionPane.showMessageDialog(null,"El archivo no corresponde a una solucion valida.");
+				}
+			}
+		
+		repintarLineas();
+	}
+	
+	private void eliminarPanel(int x,int y) {
+		logica.borrar(x,y);
+		actualizarPanel(grilla[y][x],0,false);	
+	}
+	
+	public void iniciarReloj() {
+		
+		segundos=0;
+		minutos=0;
+   	 
+	      // Aquí se pone en marcha el timer cada segundo.
+	     Timer timer = new Timer();
+	     // Dentro de 0 milisegundos avísame cada 1000 milisegundos
+	     timer.scheduleAtFixedRate(timerTask, 0, 1000);
+		
+	}
+	
+	public void actualizarReloj(int min1,int min2,int seg1,int seg2) {
+		actualizarPanelReloj(paneles_reloj[0],min1);
+		actualizarPanelReloj(paneles_reloj[1],min2);
+		actualizarPanelReloj(paneles_reloj[2],seg1);
+		actualizarPanelReloj(paneles_reloj[3],seg2);
+	}
+	
+	private void actualizarPanelReloj(JLabel panel,int numero) {
+		switch (numero) {
+		case 0:
+			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_0.png"));
+			break;
+		case 1:
+			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_1.png"));
+			break;
+		case 2:
+			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_2.png"));
+			break;
+		case 3:
+			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_3.png"));
+			break;
+		case 4:
+			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_4.png"));
+			break;
+		case 5:
+			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_5.png"));
+			break;
+		case 6:
+			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_6.png"));
+			break;
+		case 7:
+			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_7.png"));
+			break;
+		case 8:
+			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_8.png"));
+			break;
+		case 9:
+			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_9.png"));
+			break;
+		}			
+	}
+	
+    TimerTask timerTask = new TimerTask()
+    {
+        public void run() 
+        {
+       	 
+       	 if(segundos==60) {
+       		 segundos=0;
+       		 minutos++;
+       	 }
+       	 
+       	 int minutos1=minutos/10;
+       	 int minutos2=minutos%10;
+       	 int segundos1=segundos/10;
+       	 int segundos2=segundos%10;
+       	 
+       	 actualizarReloj(minutos1,minutos2,segundos1,segundos2);
+       	 
+         segundos++;
+        }
+    };
 	
 	MouseListener click=new MouseListener() {
 		@Override
@@ -736,13 +921,19 @@ public class Sudoku_GUI extends JFrame {
 			if(evento.getX()<535 && evento.getX()>30 && evento.getY()<560 && evento.getY()>55) {
 				int xTraducido=traducirX(evento.getX());
 				int yTraducido=traducirY(evento.getY());
-				actualizarPanel(grilla[yTraducido-1][xTraducido-1],numeroActual);			
+				boolean fallo=logica.insertar(xTraducido-1, yTraducido-1, numeroActual);
+				actualizarPanel(grilla[yTraducido-1][xTraducido-1],numeroActual,fallo);	
 			}
 			
 		}
 		@Override
 		public void mouseReleased(MouseEvent evento) {
-	
+			repintarLineas();
+			
+			if(logica.comprobarEstado()) {
+				timerTask.cancel();
+				JOptionPane.showMessageDialog(null,"Sudoku terminado");
+			}
 		}
 		@Override
 		public void mouseEntered(MouseEvent evento) {
