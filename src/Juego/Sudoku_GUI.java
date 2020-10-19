@@ -18,7 +18,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.ImageIcon;
 import javax.swing.border.MatteBorder;
+
+import Juego.Aplicacion.oyenteSalir;
+
 import java.awt.Font;
+import javax.swing.JButton;
 
 public class Sudoku_GUI extends JFrame {
 
@@ -44,8 +48,6 @@ public class Sudoku_GUI extends JFrame {
 	private Sudoku_Logica logica;
 	
 	private boolean terminado;
-	
-	JLabel borrar;
 	
 	private static int minutos,segundos;
 
@@ -652,10 +654,6 @@ public class Sudoku_GUI extends JFrame {
 		label.setBounds(714, 64, 14, 39);
 		contentPane.add(label);
 		
-		borrar = new JLabel("");
-		borrar.setBounds(672, 156, 98, 47);
-		contentPane.add(borrar);
-		
 		linea1 = new JPanel();
 		linea1.setBackground(Color.BLACK);
 		linea1.setBounds(189, 24, 5, 504);
@@ -675,6 +673,14 @@ public class Sudoku_GUI extends JFrame {
 		linea4.setBackground(Color.BLACK);
 		linea4.setBounds(24, 357, 504, 5);
 		contentPane.add(linea4);
+				
+		JButton btnSalir;
+		btnSalir=new JButton(new ImageIcon("Sprites\\button_salir.png"));
+		oyenteSalir oyenteSalir=new oyenteSalir();
+		btnSalir.addActionListener(oyenteSalir);
+		btnSalir.setFocusPainted(false);
+		btnSalir.setBounds(635, 127, 165, 50);
+		contentPane.add(btnSalir);
 		
 	}
 	
@@ -932,6 +938,12 @@ public class Sudoku_GUI extends JFrame {
 			panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
     	
     }
+    
+    class oyenteSalir implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			System.exit(0);
+		}
+	}
     
     public void panelGrillaClickeado(int x,int y) {
     	if(!grilla[y-1][x-1].getBloqueado()) {
