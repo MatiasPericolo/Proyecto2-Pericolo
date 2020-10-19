@@ -37,35 +37,23 @@ public class Sudoku_GUI extends JFrame {
 	private JLabel[] paneles_reloj;
 	
 	private int numeroActual;
+	private int dificultad;
 	
 	private PanelSudoku[][] grilla;
 	
 	private Sudoku_Logica logica;
 	
+	private boolean terminado;
+	
 	JLabel borrar;
 	
 	private static int minutos,segundos;
-	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Sudoku_GUI frame = new Sudoku_GUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
-	public Sudoku_GUI() {
+	public Sudoku_GUI(int num) {
+		dificultad=num;
 		iniciarJuego();
 		iniciarReloj();
 		detectarEstadoInicial();
@@ -73,6 +61,7 @@ public class Sudoku_GUI extends JFrame {
 	
 	public void iniciarJuego() {
 		
+		terminado=false;
 		numeroActual=0;
 		grilla=new PanelSudoku[9][9];
 		paneles_reloj=new JLabel[4];
@@ -669,22 +658,22 @@ public class Sudoku_GUI extends JFrame {
 		
 		linea1 = new JPanel();
 		linea1.setBackground(Color.BLACK);
-		linea1.setBounds(182, 24, 10, 504);
+		linea1.setBounds(189, 24, 5, 504);
 		contentPane.add(linea1);
 		
 		linea2 = new JPanel();
 		linea2.setBackground(Color.BLACK);
-		linea2.setBounds(350, 24, 10, 504);
+		linea2.setBounds(357, 24, 5, 504);
 		contentPane.add(linea2);
 		
 		linea3 = new JPanel();
 		linea3.setBackground(Color.BLACK);
-		linea3.setBounds(24, 182, 504, 10);
+		linea3.setBounds(24, 189, 504, 5);
 		contentPane.add(linea3);
 		
 		linea4 = new JPanel();
 		linea4.setBackground(Color.BLACK);
-		linea4.setBounds(24, 350, 504, 10);
+		linea4.setBounds(24, 357, 504, 5);
 		contentPane.add(linea4);
 		
 	}
@@ -746,45 +735,41 @@ public class Sudoku_GUI extends JFrame {
 		return aux;
 	}
 	
-	private void actualizarPanel(PanelSudoku panel,int numero,boolean fallo) {
-		switch (numero) {
-		case 0:
-			panel.setIcon(null);
-			break;
-		case 1:
-			panel.setIcon(new ImageIcon("Sprites\\numero_grilla_1.png"));
-			break;
-		case 2:
-			panel.setIcon(new ImageIcon("Sprites\\numero_grilla_2.png"));
-			break;
-		case 3:
-			panel.setIcon(new ImageIcon("Sprites\\numero_grilla_3.png"));
-			break;
-		case 4:
-			panel.setIcon(new ImageIcon("Sprites\\numero_grilla_4.png"));
-			break;
-		case 5:
-			panel.setIcon(new ImageIcon("Sprites\\numero_grilla_5.png"));
-			break;
-		case 6:
-			panel.setIcon(new ImageIcon("Sprites\\numero_grilla_6.png"));
-			break;
-		case 7:
-			panel.setIcon(new ImageIcon("Sprites\\numero_grilla_7.png"));
-			break;
-		case 8:
-			panel.setIcon(new ImageIcon("Sprites\\numero_grilla_8.png"));
-			break;
-		case 9:
-			panel.setIcon(new ImageIcon("Sprites\\numero_grilla_9.png"));
-			break;
-		}
+	private void actualizarPanel(PanelSudoku panel,int numero) {
 		
-		if(fallo)
-			panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.RED));
-		else
-			panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
-			
+			switch (numero) {
+			case 0:
+				panel.setIcon(null);
+				break;
+			case 1:
+				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_1.png"));
+				break;
+			case 2:
+				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_2.png"));
+				break;
+			case 3:
+				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_3.png"));
+				break;
+			case 4:
+				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_4.png"));
+				break;
+			case 5:
+				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_5.png"));
+				break;
+			case 6:
+				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_6.png"));
+				break;
+			case 7:
+				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_7.png"));
+				break;
+			case 8:
+				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_8.png"));
+				break;
+			case 9:
+				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_9.png"));
+				break;
+			}
+						
 	}
 	
 	private void repintarLineas() {
@@ -797,46 +782,71 @@ public class Sudoku_GUI extends JFrame {
 	private void detectarEstadoInicial() {
 		int x=0;
 		int y=0;
+		boolean valida=true;
 		
 		try {
             Scanner input = new Scanner(new File("Archivo\\estado_inicial.txt"));
             
-            while (input.hasNextLine()) {
+            while (input.hasNextLine() && valida) {
                 String line = input.nextLine();
-                for(int i=0;i<18;i++) {
-                	boolean fallo=logica.insertar(x, y, Integer.parseInt(""+line.charAt(i)));
-    				actualizarPanel(grilla[y][x],Integer.parseInt(""+line.charAt(i)),fallo);
-                	i++;
-                	x++;
+                valida=comprobarLinea(line);
+                if(valida) {
+	                for(int i=0;i<18;i++) {
+	                	boolean fallo=logica.insertar(x, y, Integer.parseInt(""+line.charAt(i)));
+	    				actualizarPanel(grilla[y][x],Integer.parseInt(""+line.charAt(i)));
+	    				actualizarColision(grilla[y][x],fallo);
+	    				grilla[y][x].setBloqueado(true);
+	                	i++;
+	                	x++;
+	                }
+	                x=0;
+	                y++;
                 }
-                x=0;
-                y++;
             }
+            
             input.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 		
 		if(logica.comprobarEstado()) {
-			for(int i=0;i<14;i++) {
+			for(int i=0;i<dificultad;i++) {
 				double aux1=Math.random()*9;
 				double aux2=Math.random()*9;
 				eliminarPanel((int)aux1,(int)aux2);
 			}
-		}else
-			for(int i=0;i<9;i++) {
-				for(int j=0;j<9;j++) {
-					eliminarPanel(i,j);
-					JOptionPane.showMessageDialog(null,"El archivo no corresponde a una solucion valida.");
-				}
-			}
+		}else {		
+			JOptionPane.showMessageDialog(null,"El archivo no corresponde a una solucion valida.");
+			System.exit(0);
+		}
 		
 		repintarLineas();
 	}
 	
+	private boolean comprobarLinea(String linea) {
+		int i;
+		boolean valida=true;
+		char digito;
+		
+		if(linea.length()>17)
+			valida=false;
+		else {
+			for(i=0;i<linea.length();i++) {
+				digito=linea.charAt(i);
+	        	if((i % 2) != 0)
+	        		if(digito != ' ')
+	        			valida=false;
+	        }
+		}
+		
+		return valida;
+	}
+	
 	private void eliminarPanel(int x,int y) {
 		logica.borrar(x,y);
-		actualizarPanel(grilla[y][x],0,false);	
+		grilla[y][x].setBloqueado(false);
+		actualizarPanel(grilla[y][x],0);	
+		actualizarColision(grilla[y][x],false);
 	}
 	
 	public void iniciarReloj() {
@@ -914,6 +924,33 @@ public class Sudoku_GUI extends JFrame {
         }
     };
 	
+    public void actualizarColision(JLabel panel,boolean colision) {
+    	
+    	if(colision)
+			panel.setBorder(new MatteBorder(3, 3, 3, 3, (Color) Color.RED));
+		else
+			panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
+    	
+    }
+    
+    public void panelGrillaClickeado(int x,int y) {
+    	if(!grilla[y-1][x-1].getBloqueado()) {
+	    	boolean auxfallo=logica.insertar(x-1, y-1, numeroActual);
+			actualizarPanel(grilla[y-1][x-1],numeroActual);
+			actualizarColision(grilla[y-1][x-1],auxfallo);
+			
+			
+			for(int i=0;i<9;i++) {
+				for(int j=0;j<9;j++) {
+					if(logica.obtener(i,j)!=0) {
+						auxfallo=logica.comprobarColisiones(i, j, logica.obtener(i,j));
+						actualizarColision(grilla[j][i],auxfallo);
+					}
+				}
+			}
+    	}
+    }
+    
 	MouseListener click=new MouseListener() {
 		@Override
 		public void mousePressed(MouseEvent evento) {
@@ -921,8 +958,7 @@ public class Sudoku_GUI extends JFrame {
 			if(evento.getX()<535 && evento.getX()>30 && evento.getY()<560 && evento.getY()>55) {
 				int xTraducido=traducirX(evento.getX());
 				int yTraducido=traducirY(evento.getY());
-				boolean fallo=logica.insertar(xTraducido-1, yTraducido-1, numeroActual);
-				actualizarPanel(grilla[yTraducido-1][xTraducido-1],numeroActual,fallo);	
+				panelGrillaClickeado(xTraducido,yTraducido);
 			}
 			
 		}
@@ -930,9 +966,16 @@ public class Sudoku_GUI extends JFrame {
 		public void mouseReleased(MouseEvent evento) {
 			repintarLineas();
 			
-			if(logica.comprobarEstado()) {
+			if(logica.comprobarEstado() && !terminado) {
+				terminado=true;
 				timerTask.cancel();
 				JOptionPane.showMessageDialog(null,"Sudoku terminado");
+				
+				for(int i=0;i<9;i++)
+					for(int j=0;j<9;j++)
+						if(!grilla[i][j].getBloqueado())
+							grilla[i][j].setBloqueado(true);
+				
 			}
 		}
 		@Override

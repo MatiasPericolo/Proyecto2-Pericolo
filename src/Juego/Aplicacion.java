@@ -21,6 +21,9 @@ public class Aplicacion extends JFrame{
 
 	private JButton btnJugar;
 	
+	private JFrame ventanaElegirNivel;
+	private JPanel panelElegirNivel;
+	
 	private JPanel contentPane;
 	private JLabel menuImagen;
 	
@@ -100,10 +103,61 @@ public class Aplicacion extends JFrame{
 	
 	class oyenteJugar implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
+			
+			JButton btnNivelUno;
+			JButton btnNivelDos;
+			JLabel fondo;
+			
+			//Creo la ventana para elegir Nivel
+			ventanaElegirNivel=new JFrame("Elegir Nivel");
+			ventanaElegirNivel.setBounds(700, 250, 400, 300);
+			ventanaElegirNivel.setVisible(true);
+			ventanaElegirNivel.setResizable(false);
+			
+			//Creo el panel para elegir Nivel
+			panelElegirNivel=new JPanel();
+			panelElegirNivel.setBorder(new EmptyBorder(5, 5, 5, 5));
+			ventanaElegirNivel.setContentPane(panelElegirNivel);
+			panelElegirNivel.setLayout(null);
+			
+			//Creo el boton Nivel uno y lo agrego
+			btnNivelUno=new JButton(new ImageIcon("Sprites\\botonFacil.jpg"));
+			oyenteDificultadFacil oyenteFacil=new oyenteDificultadFacil();
+			btnNivelUno.addActionListener(oyenteFacil);
+			btnNivelUno.setBounds(115, 40, 168, 70);
+			panelElegirNivel.add(btnNivelUno);
+			
+			//Creo el boton Nivel dos y lo agrego
+			btnNivelDos=new JButton(new ImageIcon("Sprites\\botonDificil.jpg"));
+			oyenteDificultadDificil oyenteDificil=new oyenteDificultadDificil();
+			btnNivelDos.addActionListener(oyenteDificil);
+			btnNivelDos.setBounds(115, 160, 168, 70);
+			panelElegirNivel.add(btnNivelDos);
+			
+			//Creo el fondo
+			fondo=new JLabel(new ImageIcon("Sprites\\\\fondo.jpg"));
+			panelElegirNivel.add(fondo);
+			fondo.setBounds(0,0,400,300);
+			fondo.setVisible(true);
+			
+		}
+	}
+	
+	class oyenteDificultadFacil implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			ventanaElegirNivel.setVisible(false);
 			gui.setVisible(false);
-			sodoku = new Sudoku_GUI();
+			sodoku = new Sudoku_GUI(14);
 			sodoku.setVisible(true);
 		}
 	}
 	
+	class oyenteDificultadDificil implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			ventanaElegirNivel.setVisible(false);
+			gui.setVisible(false);
+			sodoku = new Sudoku_GUI(25);
+			sodoku.setVisible(true);
+		}
+	}
 }

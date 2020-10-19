@@ -38,7 +38,7 @@ public class Sudoku_Logica {
 		sudoku[y][x]=0;
 	}
 	
-	private boolean comprobarColisiones(int x,int y,int num) {
+	public boolean comprobarColisiones(int x,int y,int num) {
 		boolean falla=false;
 		int minY;
 		int maxY;
@@ -86,5 +86,9 @@ public class Sudoku_Logica {
 						}
 					
 				return falla;
+	}
+	
+	public int obtener(int x, int y) {
+		return sudoku[y][x];
 	}
 }

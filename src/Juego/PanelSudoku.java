@@ -8,11 +8,13 @@ public class PanelSudoku extends JLabel{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	int fila,columna;
+	private int fila,columna;
+	private boolean bloqueado;
 	
 	public PanelSudoku(int n,int m) {
 		columna=n;
 		fila=m;
+		bloqueado=false;
 	}
 
 	public int getFila() {
@@ -31,4 +33,11 @@ public class PanelSudoku extends JLabel{
 		this.columna = columna;
 	}
 	
+	public boolean getBloqueado() {
+		return bloqueado;
+	}
+	
+	public void setBloqueado(boolean estado) {
+		bloqueado=estado;
+	}
 }
