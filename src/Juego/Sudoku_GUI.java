@@ -26,11 +26,6 @@ import javax.swing.JButton;
 
 public class Sudoku_GUI extends JFrame {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private JPanel contentPane;
 
 	private JPanel linea1;
@@ -684,63 +679,13 @@ public class Sudoku_GUI extends JFrame {
 		
 	}
 	
-	class OyenteBotonNumero implements ActionListener{
-		public void actionPerformed(ActionEvent e) {
-			BotonNumero aux = (BotonNumero) e.getSource();
-			numeroActual=aux.getNumero();
-		}
+	private void eliminarPanel(int x,int y) {
+		logica.borrar(x,y);
+		grilla[y][x].setBloqueado(false);
+		actualizarPanel(grilla[y][x],0);	
+		actualizarColision(grilla[y][x],false);
 	}
-	
-	private int traducirX(int x) {
-		int aux=0;
-		
-		if(x<86) {
-			aux=1;
-		}else if(x<142) {
-			aux=2;
-		}else if(x<198) {
-			aux=3;
-		}else if(x<254) {
-			aux=4;
-		}else if(x<310) {
-			aux=5;
-		}else if(x<366) {
-			aux=6;
-		}else if(x<422) {
-			aux=7;
-		}else if(x<478) {
-			aux=8;
-		}else if(x<535)
-			aux=9;
-		
-		return aux;
-	}
-	
-	private int traducirY(int y) {
-		int aux=0;
-		
-		if(y<110) {
-			aux=1;
-		}else if(y<166) {
-			aux=2;
-		}else if(y<222) {
-			aux=3;
-		}else if(y<278) {
-			aux=4;
-		}else if(y<334) {
-			aux=5;
-		}else if(y<390) {
-			aux=6;
-		}else if(y<446) {
-			aux=7;
-		}else if(y<502) {
-			aux=8;
-		}else if(y<560)
-			aux=9;
-		
-		return aux;
-	}
-	
+
 	private void actualizarPanel(PanelSudoku panel,int numero) {
 		
 			switch (numero) {
@@ -778,12 +723,32 @@ public class Sudoku_GUI extends JFrame {
 						
 	}
 	
-	private void repintarLineas() {
-		linea1.repaint();
-		linea2.repaint();
-		linea3.repaint();
-		linea4.repaint();
-	}
+	private void actualizarColision(JLabel panel,boolean colision) {
+    	
+    	if(colision)
+			panel.setBorder(new MatteBorder(3, 3, 3, 3, (Color) Color.RED));
+		else
+			panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
+    	
+    }
+	
+	private void panelGrillaClickeado(int x,int y) {
+    	if(!grilla[y-1][x-1].getBloqueado()) {
+	    	boolean auxfallo=logica.insertar(x-1, y-1, numeroActual);
+			actualizarPanel(grilla[y-1][x-1],numeroActual);
+			actualizarColision(grilla[y-1][x-1],auxfallo);
+			
+			
+			for(int i=0;i<9;i++) {
+				for(int j=0;j<9;j++) {
+					if(logica.obtener(i,j)!=0) {
+						auxfallo=logica.comprobarColisiones(i, j, logica.obtener(i,j));
+						actualizarColision(grilla[j][i],auxfallo);
+					}
+				}
+			}
+    	}
+    }
 	
 	private void detectarEstadoInicial() {
 		int x=0;
@@ -848,14 +813,7 @@ public class Sudoku_GUI extends JFrame {
 		return valida;
 	}
 	
-	private void eliminarPanel(int x,int y) {
-		logica.borrar(x,y);
-		grilla[y][x].setBloqueado(false);
-		actualizarPanel(grilla[y][x],0);	
-		actualizarColision(grilla[y][x],false);
-	}
-	
-	public void iniciarReloj() {
+	private void iniciarReloj() {
 		
 		segundos=0;
 		minutos=0;
@@ -867,7 +825,7 @@ public class Sudoku_GUI extends JFrame {
 		
 	}
 	
-	public void actualizarReloj(int min1,int min2,int seg1,int seg2) {
+	private void actualizarReloj(int min1,int min2,int seg1,int seg2) {
 		actualizarPanelReloj(paneles_reloj[0],min1);
 		actualizarPanelReloj(paneles_reloj[1],min2);
 		actualizarPanelReloj(paneles_reloj[2],seg1);
@@ -908,8 +866,78 @@ public class Sudoku_GUI extends JFrame {
 			break;
 		}			
 	}
+ 
+    class OyenteBotonNumero implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			BotonNumero aux = (BotonNumero) e.getSource();
+			numeroActual=aux.getNumero();
+		}
+	}
+    
+    class oyenteSalir implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			System.exit(0);
+		}
+	}
+    
+    private void repintarLineas() {
+		linea1.repaint();
+		linea2.repaint();
+		linea3.repaint();
+		linea4.repaint();
+	}
+    
+    private int traducirX(int x) {
+		int aux=0;
+		
+		if(x<86) {
+			aux=1;
+		}else if(x<142) {
+			aux=2;
+		}else if(x<198) {
+			aux=3;
+		}else if(x<254) {
+			aux=4;
+		}else if(x<310) {
+			aux=5;
+		}else if(x<366) {
+			aux=6;
+		}else if(x<422) {
+			aux=7;
+		}else if(x<478) {
+			aux=8;
+		}else if(x<535)
+			aux=9;
+		
+		return aux;
+	}
 	
-    TimerTask timerTask = new TimerTask()
+	private int traducirY(int y) {
+		int aux=0;
+		
+		if(y<110) {
+			aux=1;
+		}else if(y<166) {
+			aux=2;
+		}else if(y<222) {
+			aux=3;
+		}else if(y<278) {
+			aux=4;
+		}else if(y<334) {
+			aux=5;
+		}else if(y<390) {
+			aux=6;
+		}else if(y<446) {
+			aux=7;
+		}else if(y<502) {
+			aux=8;
+		}else if(y<560)
+			aux=9;
+		
+		return aux;
+	}
+	
+	TimerTask timerTask = new TimerTask()
     {
         public void run() 
         {
@@ -929,39 +957,6 @@ public class Sudoku_GUI extends JFrame {
          segundos++;
         }
     };
-	
-    public void actualizarColision(JLabel panel,boolean colision) {
-    	
-    	if(colision)
-			panel.setBorder(new MatteBorder(3, 3, 3, 3, (Color) Color.RED));
-		else
-			panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.BLACK));
-    	
-    }
-    
-    class oyenteSalir implements ActionListener{
-		public void actionPerformed(ActionEvent e) {
-			System.exit(0);
-		}
-	}
-    
-    public void panelGrillaClickeado(int x,int y) {
-    	if(!grilla[y-1][x-1].getBloqueado()) {
-	    	boolean auxfallo=logica.insertar(x-1, y-1, numeroActual);
-			actualizarPanel(grilla[y-1][x-1],numeroActual);
-			actualizarColision(grilla[y-1][x-1],auxfallo);
-			
-			
-			for(int i=0;i<9;i++) {
-				for(int j=0;j<9;j++) {
-					if(logica.obtener(i,j)!=0) {
-						auxfallo=logica.comprobarColisiones(i, j, logica.obtener(i,j));
-						actualizarColision(grilla[j][i],auxfallo);
-					}
-				}
-			}
-    	}
-    }
     
 	MouseListener click=new MouseListener() {
 		@Override

@@ -4,10 +4,6 @@ import javax.swing.JLabel;
 
 public class PanelSudoku extends JLabel{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private int fila,columna;
 	private boolean bloqueado;
 	

@@ -23,6 +23,14 @@ public class Sudoku_Logica {
 		return falla;
 	}
 	
+	public void borrar(int x,int y) {
+		sudoku[y][x]=0;
+	}
+	
+	public int obtener(int x, int y) {
+		return sudoku[y][x];
+	}
+	
 	public boolean comprobarEstado() {
 		boolean terminado=true;
 		
@@ -33,11 +41,7 @@ public class Sudoku_Logica {
 		
 		return terminado;
 	}
-	
-	public void borrar(int x,int y) {
-		sudoku[y][x]=0;
-	}
-	
+
 	public boolean comprobarColisiones(int x,int y,int num) {
 		boolean falla=false;
 		int minY;
@@ -88,7 +92,5 @@ public class Sudoku_Logica {
 				return falla;
 	}
 	
-	public int obtener(int x, int y) {
-		return sudoku[y][x];
-	}
+	
 }
