@@ -35,6 +35,8 @@ public class Sudoku_GUI extends JFrame {
 	
 	private JLabel[] paneles_reloj;
 	
+	private String[] pngSudoku,pngReloj;
+	
 	private int numeroActual;
 	private int dificultad;
 	
@@ -63,6 +65,14 @@ public class Sudoku_GUI extends JFrame {
 		grilla=new PanelSudoku[9][9];
 		paneles_reloj=new JLabel[4];
 		logica=new Sudoku_Logica();
+		pngSudoku=new String[10];
+		pngReloj=new String[10];
+		
+		for(int i=0;i<10;i++) {
+			pngSudoku[i]=("Sprites\\\\numero_grilla_"+i+".png");
+		
+			pngReloj[i]=("Sprites\\\\numero_reloj_"+i+".png");
+		}
 		
 		addMouseListener(click);
 		
@@ -688,39 +698,11 @@ public class Sudoku_GUI extends JFrame {
 
 	private void actualizarPanel(PanelSudoku panel,int numero) {
 		
-			switch (numero) {
-			case 0:
-				panel.setIcon(null);
-				break;
-			case 1:
-				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_1.png"));
-				break;
-			case 2:
-				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_2.png"));
-				break;
-			case 3:
-				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_3.png"));
-				break;
-			case 4:
-				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_4.png"));
-				break;
-			case 5:
-				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_5.png"));
-				break;
-			case 6:
-				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_6.png"));
-				break;
-			case 7:
-				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_7.png"));
-				break;
-			case 8:
-				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_8.png"));
-				break;
-			case 9:
-				panel.setIcon(new ImageIcon("Sprites\\numero_grilla_9.png"));
-				break;
-			}
-						
+		if(numero==0)
+			panel.setIcon(null);
+		else
+			panel.setIcon(new ImageIcon(pngSudoku[numero]));
+				
 	}
 	
 	private void actualizarColision(JLabel panel,boolean colision) {
@@ -833,38 +815,9 @@ public class Sudoku_GUI extends JFrame {
 	}
 	
 	private void actualizarPanelReloj(JLabel panel,int numero) {
-		switch (numero) {
-		case 0:
-			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_0.png"));
-			break;
-		case 1:
-			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_1.png"));
-			break;
-		case 2:
-			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_2.png"));
-			break;
-		case 3:
-			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_3.png"));
-			break;
-		case 4:
-			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_4.png"));
-			break;
-		case 5:
-			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_5.png"));
-			break;
-		case 6:
-			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_6.png"));
-			break;
-		case 7:
-			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_7.png"));
-			break;
-		case 8:
-			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_8.png"));
-			break;
-		case 9:
-			panel.setIcon(new ImageIcon("Sprites\\numero_reloj_9.png"));
-			break;
-		}			
+		
+		panel.setIcon(new ImageIcon(pngReloj[numero]));
+		
 	}
  
     class OyenteBotonNumero implements ActionListener{
